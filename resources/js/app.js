@@ -14,12 +14,15 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 let routes = [
-    { path: '/dash', component: require('./components/Dashboard.vue').default },
-    { path: '/profile', component: require('./components/Profile.vue').default }
+        { path: '/dash', component: require('./components/Dashboard.vue').default },
+        { path: '/users', component: require('./components/Users.vue').default },
+        { path: '/profile', component: require('./components/Profile.vue').default }
     ]
 
 const router = new VueRouter({
-    routes // short for `routes: routes`
+    mode: 'history',
+    routes, // short for `routes: routes`
+    // linkActiveClass: 'active'
 })
 /**
  * The following block of code may be used to automatically register your
