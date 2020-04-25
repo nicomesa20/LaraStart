@@ -35,6 +35,7 @@ Vue.use(VueProgressBar, options)
 //Goodloking alerts
 import Swal from 'sweetalert2';
 
+window.Swal = Swal;
 
 const Toast = Swal.mixin({
     toast: true,
@@ -47,6 +48,7 @@ const Toast = Swal.mixin({
       toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
 })
+
 window.Toast = Toast;
 
 

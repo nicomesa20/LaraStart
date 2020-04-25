@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('api');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -16,8 +20,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        
-        $users = User::with('roles')->get();
+        $users = User::with('roles')->latest()->get();
         return $users;
     }
 
@@ -31,8 +34,8 @@ class UserController extends Controller
     {
         $this->validate($request,[
             'name' => 'required|string|max:191',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8'
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'password' => 'sometimes|string|min:8'
         ]);
 
         $user = User::create([
@@ -42,7 +45,7 @@ class UserController extends Controller
             'bio' => ($request->bio),
             'photo' => ($request->photo)
         ]);
-        $role = Role::where('name',$request->type)->first();
+        $role = Role::where('name',$request->roles)->first();
         $user->roles()->attach($role);
         
     }
@@ -67,7 +70,11 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        $user->update($request->all());
+
+        return ['message' => 'User updated'];
     }
 
     /**
@@ -78,6 +85,11 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = User::findOrFail($id);
+
+        $user->roles()->detach();
+        $user->delete();
+
+        return ['message' => 'User deleted'];
     }
 }

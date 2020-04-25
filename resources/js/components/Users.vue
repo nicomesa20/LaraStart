@@ -7,7 +7,7 @@
                 <h3 class="card-title">Users Table</h3>
 
                 <div class="card-tools">
-                    <button class="btn btn-success" data-toggle="modal" data-target="#addNew">
+                    <button class="btn btn-success" @click="newModal">
                         Add New
                         <i class="fas fa-user-plus fa-fw"></i>
                     </button>
@@ -36,11 +36,11 @@
                         </td>
                         <td>{{user.created_at | myDate}}</td>
                         <td>
-                            <a href="">
+                            <a href="#" @click="editModal(user)">
                                 <i class="fa fa-edit blue"></i>
                             </a>
                             /
-                            <a href="">
+                            <a href="#"  @click="deleteUser(user.id)">
                                 <i class="fa fa-trash red"></i>
                             </a>
                         </td>
@@ -58,12 +58,13 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Add New User</h5>
+                        <h5 v-show="editMode" class="modal-title" id="exampleModalLabel">Edit {{form.name}}</h5>
+                        <h5 v-show="!editMode" class="modal-title" id="exampleModalLabel">Add New User</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form @submit.prevent="createUser"> 
+                    <form @submit.prevent="editMode? updateUser() :createUser()"> 
                         <div class="modal-body">
                             <div class="form-group">
                                 <input v-model="form.name" type="text" name="name"
@@ -88,13 +89,13 @@
 
 
                             <div class="form-group">
-                                <select name="type" v-model="form.type" id="type" class="form-control" :class="{ 'is-invalid': form.errors.has('type') }">
+                                <select name="roles" v-model="form.roles" id="s" class="form-control" :class="{ 'is-invalid': form.errors.has('roles') }">
                                     <option value="">Select User Role</option>
                                     <option value="admin">Admin</option>
                                     <option value="user">Standard User</option>
                                     <option value="author">Author</option>
                                 </select>
-                                <has-error :form="form" field="type"></has-error>
+                                <has-error :form="form" field="roles"></has-error>
                             </div>
 
                             <div class="form-group">
@@ -105,7 +106,8 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Create</button>
+                            <button v-show="editMode" type="submit" class="btn btn-success">Update</button>
+                            <button v-show="!editMode" type="submit" class="btn btn-primary">Create</button>
                         </div>
                     </form>
                 </div>
@@ -118,43 +120,97 @@
     export default {
         data(){
             return{
+                editMode: false,
                 users: {},
                 form: new Form({
+                    id : '',
                     name : '',
                     email: '',
                     password: '',
-                    type: '',
+                    roles: '',
                     bio: '',
                     photo: ''
                 })
             }
         },
         methods:{
+            updateUser(){
+                this.$Progress.start();
+                this.form.put('api/user/'+this.form.id)
+                .then(()=>{
+                    this.$Progress.finish();
+                    $('#addNew').modal('hide');
+                    Swal.fire(
+                            'Updated!',
+                            'Information has been Updated.',
+                            'success'
+                            )
+                    Fire.$emit('AfterCreate')
+                })
+                .catch(()=>{
+                    this.$Progress.fail();
+                })
+            },
+            editModal(user){
+                this.editMode = true;
+                this.form.reset();
+                this.form.clear();
+                $('#addNew').modal('show');
+                this.form.fill(user);
+                this.form.roles = user.roles[0].name
+            },
+            newModal(){
+                this.editMode = false
+                this.form.reset();
+                $('#addNew').modal('show');
+            },
+            deleteUser(id){
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        //Send AJAX request to the server 
+                        if(result.value){
+                        this.form.delete('api/user/'+id)
+                        .then(()=>{
+                            Swal.fire(
+                            'Deleted!',
+                            'User has been deleted.',
+                            'success'
+                            )
+                            Fire.$emit('AfterCreate')
+                        })
+                        .catch(()=>{
+                            swal('Failed!','There was something wrong.','warning')
+                        })
+                    }
+                    })
+            },
             loadUsers(){
                 axios.get("api/user").then(({ data }) => (this.users = data));
             },
             createUser(){
                 this.$Progress.start()
                 this.form.post('api/user')
-                this.$Progress.finish()
-                Fire.$emit('AfterCreate')
-                Toast.fire({
-                    icon: 'success',
-                    title: 'User Created Successfully'
+                .then(()=>{
+                    this.$Progress.finish()
+                    Fire.$emit('AfterCreate')
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'User Created Successfully'
+                    })
+                    $('#addNew').modal('hide')
                 })
-                $('#addNew').modal('hide')
-
-            },
-            getRolesName(roles){
-                roles = 
-                console.log('roles'+roles)
-                return roles
-            },
+            }
         },
         created(){
             this.loadUsers();
             Fire.$on('AfterCreate',() => this.loadUsers());
-            // setInterval(()=>{this.loadUsers()}, 1000);
         }
     }
 </script>
