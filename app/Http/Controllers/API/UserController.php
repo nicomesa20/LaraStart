@@ -11,7 +11,7 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('api');
+        $this->middleware('auth:api');
     }
     /**
      * Display a listing of the resource.
@@ -47,7 +47,6 @@ class UserController extends Controller
         ]);
         $role = Role::where('name',$request->roles)->first();
         $user->roles()->attach($role);
-        
     }
 
     /**
