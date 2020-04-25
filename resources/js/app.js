@@ -8,9 +8,47 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
+// Dating format
+import moment from 'moment';
+// Vform por helping exceptions and binding
 import {Form, HasError, AlertError} from 'vform';
-
+// Working with routes in vuejs
 import VueRouter from 'vue-router'
+// Progress bar
+import VueProgressBar from 'vue-progressbar'
+
+const options = {
+    color: '#bffaf3',
+    failedColor: '#874b4b',
+    thickness: '5px',
+    transition: {
+        speed: '0.2s',
+        opacity: '0.6s',
+        termination: 300
+    },
+    autoRevert: true,
+    inverse: false
+}
+
+Vue.use(VueProgressBar, options)
+
+//Goodloking alerts
+import Swal from 'sweetalert2';
+
+
+const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    onOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer)
+      toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+})
+window.Toast = Toast;
+
 
 window.Form = Form;
 Vue.component(HasError.name, HasError)
@@ -30,6 +68,17 @@ const router = new VueRouter({
     routes, // short for `routes: routes`
     // linkActiveClass: 'active'
 })
+
+Vue.filter('upText',(text)=>{
+    return text.charAt(0).toUpperCase() + text.slice(1)
+})
+Vue.filter('myDate',function(created){
+    return moment(created).format('MMMM Do YYYY');
+});
+
+
+
+window.Fire = new Vue();
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue

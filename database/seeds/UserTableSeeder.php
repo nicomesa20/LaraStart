@@ -34,7 +34,7 @@ class UserTableSeeder extends Seeder
             'password' => bcrypt('1234'),
             'photo' => 'foto_perfil.jpg'
         ]);
-        $author->roles()->attach($role_author);
+        $author->roles()->attach($role_user);
     
 
         $user = User::create([
