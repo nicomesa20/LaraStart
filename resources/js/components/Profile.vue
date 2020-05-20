@@ -111,10 +111,12 @@
                                             <input
                                                 type=""
                                                 class="form-control"
+                                                :class="{ 'is-invalid': form.errors.has('name') }"
                                                 id="inputName"
                                                 placeholder="Name"
                                                 v-model="form.name"
                                             />
+                                            <has-error :form="form" field="name"></has-error>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -128,10 +130,12 @@
                                             <input
                                                 type="email"
                                                 class="form-control"
+                                                :class="{ 'is-invalid': form.errors.has('email') }"
                                                 id="inputEmail"
                                                 placeholder="Email"
                                                 v-model="form.email"
                                             />
+                                            <has-error :form="form" field="email"></has-error>
                                         </div>
                                     </div>
 
@@ -171,6 +175,7 @@
                                         <label
                                             for="password"
                                             class="col-sm-12 control-label"
+                                            :class="{ 'is-invalid': form.errors.has('password') }"
                                             >Password (Leave empty if not
                                             changing)</label
                                         >
@@ -182,6 +187,7 @@
                                                 id="password"
                                                 placeholder="Password"
                                             />
+                                            <has-error :form="form" field="password"></has-error>
                                         </div>
                                     </div>
 
@@ -228,22 +234,34 @@ export default {
         console.log("Component mounted");
     },
     methods: {
-        updateInfo(){
-            this.form.put('api/profile')
-            .then(() => {
-
-            })
-            .catch(() =>{
-
-            });
+        updateInfo() {
+            this.$Progress.start();
+            this.form
+                .put("api/profile")
+                .then(() => {
+                    this.$Progress.finish();
+                })
+                .catch(() => {
+                    this.$Progress.fail();
+                });
         },
         updateProfile(e) {
             let file = e.target.files[0];
             let reader = new FileReader();
-            reader.onloadend = (file) => {
-                this.form.photo = reader.result;
-            };
-            reader.readAsDataURL(file);
+
+            if (file.size < 2111775) {
+                reader.onloadend = file => {
+                    this.form.photo = reader.result;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Something went wrong!",
+                    footer: "You are uploading a very big file"
+                });
+            }
         }
     },
     created() {
