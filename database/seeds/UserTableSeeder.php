@@ -44,5 +44,7 @@ class UserTableSeeder extends Seeder
             'photo' => 'foto_perfil.jpg'
         ]);
         $user->roles()->attach($role_author);
+
+        factory(App\User::class,50)->create();
     }
 }

@@ -20,14 +20,14 @@
                         style="background-image:url('img/user-cover.jpg');"
                     >
                         <h3 class="widget-user-username text-right">
-                            Elizabeth Pierce
+                            {{this.form.name}}
                         </h3>
                         <h5 class="widget-user-desc text-right">
                             Web Designer
                         </h5>
                     </div>
                     <div class="widget-user-image">
-                        <img class="img-circle" src="" alt="User Avatar" />
+                        <img class="img-circle" :src="getProfilePhoto()" alt="User Avatar"/>
                     </div>
                     <div class="card-footer">
                         <div class="row">
@@ -231,9 +231,12 @@ export default {
         };
     },
     mounted() {
-        console.log("Component mounted");
     },
     methods: {
+        getProfilePhoto(){
+            let prefix = (this.form.photo.match(/\//) ? '' : '/img/profile/');
+            return prefix + this.form.photo;
+        },
         updateInfo() {
             this.$Progress.start();
             this.form
@@ -254,6 +257,7 @@ export default {
                     this.form.photo = reader.result;
                 };
                 reader.readAsDataURL(file);
+                this.form.photo
             } else {
                 Swal.fire({
                     icon: "error",

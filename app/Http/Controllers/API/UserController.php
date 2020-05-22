@@ -20,7 +20,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::with('roles')->latest()->get();
+        $users = User::with('roles')->get();
         return $users;
     }
 
@@ -110,8 +110,12 @@ class UserController extends Controller
             'name' => 'required|string|max:191',
             'email' => 'required|string|email|max:191|unique:users,email,'.$user->id,
             'password' => 'sometimes|min:6'
-        ]);
+            ]);
         $user->update($request->all());
+        $role = Role::where('name',$request->roles)->first();
+        $user->roles()->sync($role);
+        // $user->roles()->attach($role);
+        // \Debugbar::info($request->roles);
 
         return ['message' => 'User updated'];
     }
