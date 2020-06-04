@@ -224,7 +224,7 @@ export default {
                 name: "",
                 email: "",
                 password: "",
-                type: "",
+                role: "",
                 bio: "",
                 photo: ""
             })

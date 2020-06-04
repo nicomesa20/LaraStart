@@ -4,14 +4,16 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\User;
-use App\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth:api');
+        // $this->authorize('isAdmin');
+
     }
     /**
      * Display a listing of the resource.
@@ -20,8 +22,11 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::with('roles')->get();
-        return $users;
+        // $this->authorize('isAdmin');
+        if(Gate::allows('isAdmin') || Gate::allows('isAuthor')){
+            $users = User::get();
+            return $users;
+        }
     }
 
     /**
@@ -43,10 +48,9 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'bio' => ($request->bio),
-            'photo' => ($request->photo)
+            'photo' => ($request->photo),
+            'role' => ($request->role)
         ]);
-        $role = Role::where('name',$request->roles)->first();
-        $user->roles()->attach($role);
     }
 
     /**
@@ -59,7 +63,7 @@ class UserController extends Controller
     {
         //
     }
-    
+
     public function profile()
     {
         return auth('api')->user();
@@ -106,18 +110,17 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
+
         $this->validate($request,[
             'name' => 'required|string|max:191',
             'email' => 'required|string|email|max:191|unique:users,email,'.$user->id,
             'password' => 'sometimes|min:6'
-            ]);
+        ]);
         $user->update($request->all());
-        $role = Role::where('name',$request->roles)->first();
-        $user->roles()->sync($role);
-        // $user->roles()->attach($role);
-        // \Debugbar::info($request->roles);
-
-        return ['message' => 'User updated'];
+        $user->password = bcrypt($request->password);
+        $user->role = $request->role;
+        $user->save();
+        return ['message' => 'Updated the user info'];
     }
 
 
@@ -129,9 +132,8 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+        $this->authorize('isAdmin');
         $user = User::findOrFail($id);
-
-        $user->roles()->detach();
         $user->delete();
 
         return ['message' => 'User deleted'];

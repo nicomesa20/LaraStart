@@ -6,7 +6,7 @@ use App\User;
 
 class UserTableSeeder extends Seeder
 {
-    
+
     /**
      * Run the database seeds.
      *
@@ -14,36 +14,29 @@ class UserTableSeeder extends Seeder
      */
     public function run()
     {
-        $role_admin = Role::where('name','admin')->first();
-        $role_author = Role::where('name','author')->first();
-        $role_user = Role::where('name','user')->first();
-
         $admin = User::create([
             'name' => 'Admin',
             'email' => 'admin@email.com',
             'password' => bcrypt('1234'),
+            'role' => 'admin',
             'photo' => 'foto_perfil.jpg'
         ]);
-
-        $admin->roles()->attach($role_admin);
-        
 
         $author = User::create([
             'name' => 'User',
             'email' => 'user@email.com',
             'password' => bcrypt('1234'),
+            'role' => 'user',
             'photo' => 'foto_perfil.jpg'
         ]);
-        $author->roles()->attach($role_user);
-    
 
         $user = User::create([
             'name' => 'Author',
             'email' => 'author@email.com',
             'password' => bcrypt('1234'),
+            'role' => 'author',
             'photo' => 'foto_perfil.jpg'
         ]);
-        $user->roles()->attach($role_author);
 
         factory(App\User::class,50)->create();
     }

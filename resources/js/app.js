@@ -1,4 +1,3 @@
-
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -11,7 +10,11 @@ window.Vue = require('vue');
 // Dating format
 import moment from 'moment';
 // Vform por helping exceptions and binding
-import {Form, HasError, AlertError} from 'vform';
+import { Form, HasError, AlertError } from 'vform';
+
+import Gate from './Gate';
+Vue.prototype.$gate = new Gate(window.user);
+
 // Working with routes in vuejs
 import VueRouter from 'vue-router'
 // Progress bar
@@ -44,8 +47,8 @@ const Toast = Swal.mixin({
     timer: 3000,
     timerProgressBar: true,
     onOpen: (toast) => {
-      toast.addEventListener('mouseenter', Swal.stopTimer)
-      toast.addEventListener('mouseleave', Swal.resumeTimer)
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
 })
 
@@ -60,11 +63,11 @@ Vue.component(AlertError.name, AlertError)
 Vue.use(VueRouter)
 
 let routes = [
-        { path: '/developer', component: require('./components/Developer.vue').default },
-        { path: '/dash', component: require('./components/Dashboard.vue').default },
-        { path: '/users', component: require('./components/Users.vue').default },
-        { path: '/profile', component: require('./components/Profile.vue').default }
-    ]
+    { path: '/developer', component: require('./components/Developer.vue').default },
+    { path: '/dash', component: require('./components/Dashboard.vue').default },
+    { path: '/users', component: require('./components/Users.vue').default },
+    { path: '/profile', component: require('./components/Profile.vue').default }
+]
 
 const router = new VueRouter({
     mode: 'history',
@@ -72,10 +75,10 @@ const router = new VueRouter({
     // linkActiveClass: 'active'
 })
 
-Vue.filter('upText',(text)=>{
+Vue.filter('upText', (text) => {
     return text.charAt(0).toUpperCase() + text.slice(1)
 })
-Vue.filter('myDate',function(created){
+Vue.filter('myDate', function(created) {
     return moment(created).format('MMMM Do YYYY');
 });
 
@@ -114,6 +117,11 @@ Vue.component(
 Vue.component(
     'passport-personal-access-tokens',
     require('./components/passport/PersonalAccessTokens.vue').default
+);
+
+Vue.component(
+    'not-found',
+    require('./components/NotFound.vue').default
 );
 
 const app = new Vue({
