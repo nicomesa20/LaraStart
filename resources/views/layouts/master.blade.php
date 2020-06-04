@@ -22,9 +22,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <nav class="main-header navbar navbar-expand navbar-white navbar-light">
         <!-- Left navbar links -->
         <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-          </li>
+            <li class="nav-item">
+                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+            </li>
         </ul>
 
         <!-- SEARCH FORM -->
@@ -32,9 +32,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <div class="input-group input-group-sm">
             <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
             <div class="input-group-append">
-              <button class="btn btn-navbar" type="submit">
-                <i class="fas fa-search"></i>
-              </button>
+                <button class="btn btn-navbar" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
             </div>
           </div>
         </form>
@@ -80,7 +80,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </router-link>
               </li>
 
-              @can('isAdmin' || 'isAuthor')
+              @can('isAdmin')
               <li class="nav-item has-treeview">
                 <a href="#" class="nav-link ">
                   <i class="nav-icon fas fa-cog green"></i>
