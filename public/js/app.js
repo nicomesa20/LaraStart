@@ -2626,6 +2626,12 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     var _this6 = this;
 
+    Fire.$on('searching', function () {
+      var query = _this6.$parent.search;
+      axios.get('api/findUser?q=' + query).then(function (data) {
+        _this6.users = data.data;
+      })["catch"](function () {});
+    });
     this.loadUsers();
     Fire.$on("AfterCreate", function () {
       return _this6.loadUsers();
@@ -62805,7 +62811,9 @@ var render = function() {
               _vm._v(" "),
               _c("h5", { staticClass: "widget-user-desc text-right" }, [
                 _vm._v(
-                  "\n                        Web Designer\n                    "
+                  "\n                        " +
+                    _vm._s(this.form.role) +
+                    "\n                    "
                 )
               ])
             ]
@@ -62832,10 +62840,7 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "div",
-                {
-                  staticClass: "tab-pane active show",
-                  attrs: { id: "settings" }
-                },
+                { staticClass: "tab-pane active", attrs: { id: "settings" } },
                 [
                   _c("form", { staticClass: "form-horizontal" }, [
                     _c("div", { staticClass: "form-group" }, [
@@ -63099,7 +63104,7 @@ var staticRenderFns = [
           _c(
             "a",
             {
-              staticClass: "nav-link active",
+              staticClass: "nav-link",
               attrs: { href: "#activity", "data-toggle": "tab" }
             },
             [_vm._v("Activity")]
@@ -63110,7 +63115,7 @@ var staticRenderFns = [
           _c(
             "a",
             {
-              staticClass: "nav-link",
+              staticClass: "nav-link active show",
               attrs: { href: "#settings", "data-toggle": "tab" }
             },
             [_vm._v("Settings")]
@@ -63123,17 +63128,13 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticClass: "tab-pane active", attrs: { id: "activity" } },
-      [
-        _c("h1", [
-          _vm._v(
-            "\n                                ACTIVITY PANE\n                            "
-          )
-        ])
-      ]
-    )
+    return _c("div", { staticClass: "tab-pane", attrs: { id: "activity" } }, [
+      _c("h1", [
+        _vm._v(
+          "\n                                ACTIVITY PANE\n                            "
+        )
+      ])
+    ])
   },
   function() {
     var _vm = this
@@ -80079,6 +80080,9 @@ var routes = [{
 }, {
   path: '/profile',
   component: __webpack_require__(/*! ./components/Profile.vue */ "./resources/js/components/Profile.vue")["default"]
+}, {
+  path: '*',
+  component: __webpack_require__(/*! ./components/NotFound */ "./resources/js/components/NotFound.vue")["default"]
 }];
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_3__["default"]({
   mode: 'history',
@@ -80116,7 +80120,15 @@ Vue.component('passport-personal-access-tokens', __webpack_require__(/*! ./compo
 Vue.component('not-found', __webpack_require__(/*! ./components/NotFound.vue */ "./resources/js/components/NotFound.vue")["default"]);
 var app = new Vue({
   el: '#app',
-  router: router
+  router: router,
+  data: {
+    search: ''
+  },
+  methods: {
+    searchit: function searchit() {
+      Fire.$emit('searching');
+    }
+  }
 });
 
 /***/ }),

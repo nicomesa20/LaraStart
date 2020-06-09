@@ -23,7 +23,7 @@
                             {{this.form.name}}
                         </h3>
                         <h5 class="widget-user-desc text-right">
-                            Web Designer
+                            {{this.form.role}}
                         </h5>
                     </div>
                     <div class="widget-user-image">
@@ -71,7 +71,7 @@
                         <ul class="nav nav-pills">
                             <li class="nav-item">
                                 <a
-                                    class="nav-link active"
+                                    class="nav-link"
                                     href="#activity"
                                     data-toggle="tab"
                                     >Activity</a
@@ -79,7 +79,7 @@
                             </li>
                             <li class="nav-item">
                                 <a
-                                    class="nav-link"
+                                    class="nav-link active show"
                                     href="#settings"
                                     data-toggle="tab"
                                     >Settings</a
@@ -91,14 +91,14 @@
                     <div class="card-body">
                         <div class="tab-content">
                             <!-- Activity Tab -->
-                            <div class="tab-pane active" id="activity">
+                            <div class="tab-pane" id="activity">
                                 <h1>
                                     ACTIVITY PANE
                                 </h1>
                             </div>
                             <!-- /.Activity Tab -->
                             <!-- Setting Tab -->
-                            <div class="tab-pane active show" id="settings">
+                            <div class="tab-pane active" id="settings">
                                 <form class="form-horizontal">
                                     <div class="form-group">
                                         <label
