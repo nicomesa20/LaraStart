@@ -48063,3 +48063,23 @@ readers do not read off random characters that represent icons */
   color: #fff !important;
 }
 
+@media print {
+  .nav.nav-tabs li:not(.active) {
+    display: none;
+  }
+
+  .invoice {
+    padding: 10px 20px;
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+
+  .table-responsive table {
+    background-color: transparent !important;
+  }
+}
+
+@page {
+  margin: 0;
+}
+
